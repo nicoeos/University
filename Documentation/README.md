@@ -1,4 +1,4 @@
-# Too Crous To Go 🎓🥗
+# The Good Canteen 🎓🥗
 
 A React-based web application connecting students with university restaurants (Crous) to reduce food waste by selling surplus food as "Mystery Bags".
 

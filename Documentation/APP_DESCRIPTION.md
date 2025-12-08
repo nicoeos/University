@@ -1,7 +1,7 @@
 # Too Crous To Go
 
 ## 🌍 Mission
-**Too Crous To Go** is a dedicated food rescue platform designed specifically for the university ecosystem in Strasbourg. 
+**The Good Canteen** is a dedicated food rescue platform designed specifically for the university ecosystem in Strasbourg. 
 By connecting Crous cafeterias and university restaurants with students, we aim to eliminate food waste while 
 providing affordable meals to those who need them most.
 
