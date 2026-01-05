@@ -46,3 +46,25 @@ export const suggestSmartTags = async (title: string): Promise<string[]> => {
     return ["Meals"];
   }
 };
+
+export const getRecipeSuggestion = async (tags: string[]): Promise<string> => {
+  try {
+    const prompt = `
+      I just bought a university cafeteria "Mystery Bag" to save food waste.
+      The bag is tagged as: ${tags.join(', ')}.
+      
+      Suggest ONE creative, simple recipe idea (max 100 words) I could make assuming the bag contains typical cafeteria leftovers (bread, pasta, salad, veggies, or cooked meat depending on tags).
+      Format nicely with emojis. Keep it fun and student-friendly.
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+
+    return response.text?.trim() || "Mix it all up for a creative leftover salad! 🥗";
+  } catch (error) {
+    console.error("Error getting recipe:", error);
+    return "Combine the ingredients with some olive oil and spices for a quick stir-fry! 🥘";
+  }
+};

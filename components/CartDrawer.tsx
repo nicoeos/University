@@ -1,7 +1,7 @@
-
-import React from 'react';
-import { X, QrCode, Clock, MapPin, Calendar, CheckCircle2, ShoppingBag } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, QrCode, Clock, MapPin, Calendar, CheckCircle2, ShoppingBag, ChefHat } from 'lucide-react';
 import { Offer } from '../types';
+import RecipeModal from './RecipeModal';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,7 +10,10 @@ interface CartDrawerProps {
 }
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, orders }) => {
+  const [selectedRecipeOrder, setSelectedRecipeOrder] = useState<Offer | null>(null);
+
   return (
+    <>
     <div className={`fixed inset-0 z-[60] ${isOpen ? '' : 'pointer-events-none'}`}>
       {/* Backdrop */}
       <div 
@@ -79,10 +82,18 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, orders }) => {
                     </div>
                   </div>
 
-                  <div className="p-3 border-t border-gray-100">
-                      <button className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 group">
-                          <QrCode className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          Show Pickup Code
+                  <div className="p-3 border-t border-gray-100 flex gap-2">
+                      <button 
+                          onClick={() => setSelectedRecipeOrder(order)}
+                          className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-2.5 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                          title="Get AI Recipe Ideas"
+                      >
+                          <ChefHat className="w-4 h-4" />
+                          Cook ideas
+                      </button>
+                      <button className="flex-1 bg-gray-900 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                          <QrCode className="w-4 h-4" />
+                          Code
                       </button>
                   </div>
                 </div>
@@ -107,6 +118,13 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, orders }) => {
         </div>
       </div>
     </div>
+    
+    <RecipeModal 
+        isOpen={!!selectedRecipeOrder} 
+        onClose={() => setSelectedRecipeOrder(null)} 
+        offer={selectedRecipeOrder} 
+    />
+    </>
   );
 };
 

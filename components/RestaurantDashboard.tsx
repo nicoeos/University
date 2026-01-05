@@ -1,7 +1,7 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Save, Euro, ChevronDown } from 'lucide-react';
+import { Save, Euro, ChevronDown, Camera, Image as ImageIcon, X } from 'lucide-react';
 import { Offer, DietType } from '../types';
 
 interface RestaurantDashboardProps {
@@ -11,6 +11,8 @@ interface RestaurantDashboardProps {
 }
 
 const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOffers, locations }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const generateTimeOptions = () => {
     const times = [];
     for (let i = 11; i <= 20; i++) {
@@ -44,6 +46,8 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
     pickupEnd: '15:00',
   });
 
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
   const statsData = [
     { name: 'Mon', saved: 12, earned: 36 },
     { name: 'Tue', saved: 19, earned: 57 },
@@ -53,42 +57,50 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
   ];
 
   const getRelevantImage = (category: string) => {
-    if (category === DietType.SNACKS) return "https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80";
-    if (category === DietType.VEGETARIAN) return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80";
-    if (category === DietType.HALAL) return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
-    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"; // Default Meal
+    if (category === DietType.SANDWICH) return "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=800&q=80";
+    if (category === DietType.DESSERTS_BAKERY) return "https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80";
+    if (category === DietType.VEGETARIAN || category === DietType.VEGAN) return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80";
+    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"; 
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const tags = [formData.category as DietType];
-    if (formData.category !== DietType.MEALS && formData.category !== DietType.SNACKS) {
-        tags.push(DietType.MEALS); 
-    }
 
     const newOffer: Offer = {
       id: Date.now().toString(),
-      title: "Mystery Bag",
+      title: `${formData.category} Bag`,
       restaurantName: formData.restaurantName, 
-      description: "Selection of the restaurant surplus",
+      description: `A fresh surplus of ${formData.category} options.`,
       price: parseFloat(formData.price),
       pickupDate: formData.pickupDate,
       pickupTimeStart: formData.pickupStart,
       pickupTimeEnd: formData.pickupEnd,
-      imageUrl: getRelevantImage(formData.category),
+      imageUrl: uploadedImage || getRelevantImage(formData.category),
       distance: 0,
       rating: 5.0,
       remaining: parseInt(formData.quantity),
       tags: tags,
-      isMysteryBag: true
+      isMysteryBag: false
     };
     setOffers([newOffer, ...offers]);
     
-    // Reset only necessary fields
     setFormData(prev => ({
         ...prev,
         quantity: '5',
     }));
+    setUploadedImage(null);
     alert("Offer published successfully!");
   };
 
@@ -98,7 +110,6 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
       
-      {/* Left Column: Stats */}
       <div className="lg:col-span-1 space-y-6">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Weekly Impact</h2>
@@ -134,14 +145,13 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
         </div>
 
         <div className="bg-[#D62828] text-white p-6 rounded-2xl shadow-lg">
-            <h3 className="font-bold text-lg mb-2">Reduce Waste</h3>
+            <h3 className="font-bold text-lg mb-2">Transparency Matters</h3>
             <p className="text-white/90 text-sm">
-                Every Mystery Bag saved helps the planet. Thank you for your contribution!
+                Adding a photo of the bag increases trust and helps students with allergies or specific diets make better choices.
             </p>
         </div>
       </div>
 
-      {/* Right Column: Upload Form */}
       <div className="lg:col-span-2">
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
@@ -151,7 +161,6 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Restaurant Selector */}
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Restaurant / Cafeteria</label>
                 <div className="relative">
@@ -168,30 +177,16 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                 </div>
             </div>
 
-            {/* Fixed Title & Description */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Offer Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Offer Title (Automatic)</label>
                     <input 
                         type="text" 
                         disabled
-                        value="Mystery Bag"
-                        className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 font-medium cursor-not-allowed"
+                        value={`${formData.category} Bag`}
+                        className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-bold cursor-not-allowed"
                     />
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <input 
-                        type="text" 
-                        disabled
-                        value="Selection of the restaurant surplus"
-                        className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 font-medium cursor-not-allowed"
-                    />
-                </div>
-            </div>
-
-            {/* Meal Type & Quantity */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Meal Type</label>
                     <div className="relative">
@@ -200,14 +195,61 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                             value={formData.category}
                             onChange={(e) => setFormData({...formData, category: e.target.value as DietType})}
                         >
-                            <option value={DietType.ALL}>All Types</option>
-                            <option value={DietType.VEGETARIAN}>Vegetarian</option>
-                            <option value={DietType.HALAL}>Halal</option>
-                            <option value={DietType.SNACKS}>Snacks</option>
+                            {Object.values(DietType).filter(v => v !== DietType.ALL).map(val => (
+                                <option key={val} value={val}>{val}</option>
+                            ))}
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
                  </div>
+            </div>
+
+            {/* Photo Upload Section */}
+            <div className="bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                        <Camera className="w-5 h-5 text-[#D62828]" />
+                        Offer Transparency
+                    </h3>
+                    {uploadedImage && (
+                        <button 
+                            type="button"
+                            onClick={() => setUploadedImage(null)}
+                            className="text-xs text-red-600 font-bold flex items-center gap-1 hover:underline"
+                        >
+                            <X className="w-3 h-3" /> Remove
+                        </button>
+                    )}
+                </div>
+
+                {!uploadedImage ? (
+                    <div 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex flex-col items-center justify-center py-8 cursor-pointer hover:bg-white transition-colors group"
+                    >
+                        <ImageIcon className="w-12 h-12 text-gray-300 group-hover:text-[#D62828] transition-colors mb-2" />
+                        <p className="text-sm font-medium text-gray-500">Take a photo of the bag content</p>
+                        <p className="text-xs text-gray-400">Helps students see exactly what they're buying</p>
+                        <input 
+                            ref={fileInputRef}
+                            type="file" 
+                            accept="image/*" 
+                            capture="environment"
+                            onChange={handleImageUpload}
+                            className="hidden" 
+                        />
+                    </div>
+                ) : (
+                    <div className="relative aspect-video rounded-lg overflow-hidden shadow-sm">
+                        <img src={uploadedImage} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/20 flex items-end p-3">
+                            <span className="bg-white/90 text-gray-800 text-[10px] font-bold px-2 py-1 rounded">Actual Content Photo</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (Max 50)</label>
                     <div className="relative">
@@ -223,10 +265,6 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
                  </div>
-            </div>
-
-            {/* Price & Date */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Price (€)</label>
                     <div className="relative">
@@ -244,7 +282,10 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                         <Euro className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     </div>
                  </div>
-                 <div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Date</label>
                     <div className="relative">
                         <select 
@@ -258,11 +299,7 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     </div>
-                 </div>
-            </div>
-
-            {/* Times */}
-            <div className="grid grid-cols-2 gap-6">
+                </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
                     <div className="relative">
@@ -297,7 +334,7 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
                     className="w-full bg-[#D62828] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-red-700 transition-all transform hover:scale-[1.01] flex items-center justify-center gap-2"
                 >
                     <Save className="w-5 h-5" />
-                    Publish Mystery Bag
+                    Publish {formData.category} Bag
                 </button>
             </div>
 
@@ -309,4 +346,3 @@ const RestaurantDashboard: React.FC<RestaurantDashboardProps> = ({ offers, setOf
 };
 
 export default RestaurantDashboard;
-    

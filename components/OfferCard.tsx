@@ -22,7 +22,6 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onBuy }) => {
     return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
   };
 
-  // Fallback for legacy data or simple string "Today"
   const displayDate = offer.pickupDate.includes('-') ? formatDate(offer.pickupDate) : offer.pickupDate;
 
   return (
@@ -40,13 +39,6 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onBuy }) => {
           <span className="absolute top-3 left-3 bg-[#D62828] text-white text-xs px-2 py-1 rounded font-medium shadow-sm">
             {offer.remaining} left
           </span>
-        )}
-        {offer.isMysteryBag && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                <span className="text-white font-bold text-sm flex items-center gap-1">
-                    Mystery Bag
-                </span>
-            </div>
         )}
       </div>
 

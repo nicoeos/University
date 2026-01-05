@@ -1,5 +1,7 @@
 {
   "name": "The Good Canteen",
-  "description": "A university food rescue app connecting students with Crous cafeterias to reduce food waste.",
-  "requestFramePermissions": []
+  "description": "A university food rescue app connecting students with Crous cafeterias to reduce food waste through transparent dietary-based offers.",
+  "requestFramePermissions": [
+    "camera"
+  ]
 }

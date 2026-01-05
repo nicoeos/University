@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, ShoppingBag, ChefHat } from 'lucide-react';
+import { User, ShoppingBag } from 'lucide-react';
 import { UserRole } from '../types';
 
 interface HeaderProps {
@@ -21,12 +21,10 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
             onClick={() => {
                 setRole('student');
                 if (role === 'student' && studentView === 'profile') {
-                     // If clicking logo while in profile, go home
                      onProfileClick(); 
                 }
             }}
         >
-            {/* Logo area */}
            <div className="bg-white p-1 rounded-full">
              <ShoppingBag className="text-[#D62828] w-6 h-6" />
            </div>
@@ -34,7 +32,6 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
         </div>
 
         <div className="flex items-center space-x-6">
-            {/* 1. Student Portal Link */}
             <button 
                 onClick={() => setRole('student')}
                 className={`text-sm font-medium hover:text-gray-200 transition-colors ${role === 'student' ? 'underline decoration-2 underline-offset-4' : 'opacity-80'}`}
@@ -42,7 +39,6 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
                 Student Portal
             </button>
 
-            {/* 2. Cart (Only visible in Student Portal) */}
             {role === 'student' && (
                 <div 
                     className="relative cursor-pointer hover:bg-white/10 p-2 rounded-full transition-colors"
@@ -58,7 +54,6 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
                 </div>
             )}
 
-            {/* 3. Student Profile (Only visible in Student Portal) */}
             {role === 'student' && (
                 <div 
                     className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all ${studentView === 'profile' ? 'bg-white text-[#D62828]' : 'bg-white/20 hover:bg-white/30'}`}
@@ -69,7 +64,6 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
                 </div>
             )}
 
-            {/* 4. Crous Portal Link */}
             <button 
                 onClick={() => setRole('restaurant')}
                 className={`text-sm font-medium hover:text-gray-200 transition-colors ${role === 'restaurant' ? 'underline decoration-2 underline-offset-4' : 'opacity-80'}`}
