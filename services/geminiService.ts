@@ -1,7 +1,29 @@
-import { GoogleGenAI } from "@google/genai";
+
+import { GoogleGenAI, Type } from "@google/genai";
 
 // Initialize the Gemini client
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+// Fix: Added missing getRecipeSuggestion function required by RecipeModal
+export const getRecipeSuggestion = async (tags: string[]): Promise<string> => {
+  try {
+    const prompt = `
+      I just rescued a surplus food bag with these items/characteristics: ${tags.join(', ')}.
+      Suggest a creative, simple recipe or a way to reheat/combine these items to make a delicious meal.
+      Keep it brief and practical for a student.
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+    });
+
+    return response.text?.trim() || "No recipe suggestion available.";
+  } catch (error) {
+    console.error("Error getting recipe suggestion:", error);
+    return "Couldn't cook up a recipe right now. Try again later!";
+  }
+};
 
 export const generateOfferDescription = async (title: string, tags: string[]): Promise<string> => {
   try {
@@ -13,29 +35,37 @@ export const generateOfferDescription = async (title: string, tags: string[]): P
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
     });
 
-    return response.text?.trim() || "A delicious mystery surprise waiting to be rescued!";
+    return response.text?.trim() || "A delicious surprise waiting to be rescued!";
   } catch (error) {
     console.error("Error generating description:", error);
     return "Freshly prepared food looking for a home.";
   }
 };
 
+// Fix: Updated suggestSmartTags to use responseSchema and Type as recommended in guidelines
 export const suggestSmartTags = async (title: string): Promise<string[]> => {
   try {
     const prompt = `
       Given the food item "${title}", suggest 3 relevant category tags from this list: 
       [Vegetarian, Halal, Meals, Snacks, Dessert, Healthy].
-      Return result as a JSON array of strings only.
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
-      config: { responseMimeType: 'application/json' }
+      config: { 
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.STRING
+          }
+        }
+      }
     });
 
     const text = response.text;
@@ -44,27 +74,5 @@ export const suggestSmartTags = async (title: string): Promise<string[]> => {
   } catch (error) {
     console.error("Error suggesting tags:", error);
     return ["Meals"];
-  }
-};
-
-export const getRecipeSuggestion = async (tags: string[]): Promise<string> => {
-  try {
-    const prompt = `
-      I just bought a university cafeteria "Mystery Bag" to save food waste.
-      The bag is tagged as: ${tags.join(', ')}.
-      
-      Suggest ONE creative, simple recipe idea (max 100 words) I could make assuming the bag contains typical cafeteria leftovers (bread, pasta, salad, veggies, or cooked meat depending on tags).
-      Format nicely with emojis. Keep it fun and student-friendly.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-    });
-
-    return response.text?.trim() || "Mix it all up for a creative leftover salad! 🥗";
-  } catch (error) {
-    console.error("Error getting recipe:", error);
-    return "Combine the ingredients with some olive oil and spices for a quick stir-fry! 🥘";
   }
 };

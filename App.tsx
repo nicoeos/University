@@ -189,7 +189,7 @@ const INITIAL_OFFERS: Offer[] = [
     pickupDate: TODAY,
     pickupTimeStart: '10:00',
     pickupTimeEnd: '19:00',
-    imageUrl: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1534483909714-d40b4568324f?auto=format&fit=crop&w=800&q=80',
     distance: 0.1,
     rating: 4.1,
     remaining: 15,
@@ -221,7 +221,7 @@ const INITIAL_OFFERS: Offer[] = [
     pickupDate: TODAY,
     pickupTimeStart: '15:00',
     pickupTimeEnd: '16:00',
-    imageUrl: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1509722747041-619f383b8326?auto=format&fit=crop&w=800&q=80',
     distance: 3.8,
     rating: 4.4,
     remaining: 2,
@@ -246,25 +246,9 @@ const INITIAL_OFFERS: Offer[] = [
   },
   {
     id: '13',
-    title: 'Meals Bag',
-    restaurantName: 'Cafétéria de la Fonderie',
-    description: 'Standard surplus tray meals.',
-    price: 3.00,
-    pickupDate: TODAY,
-    pickupTimeStart: '13:30',
-    pickupTimeEnd: '14:30',
-    imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80',
-    distance: 3.9,
-    rating: 4.3,
-    remaining: 4,
-    tags: [DietType.MEALS],
-    isMysteryBag: false
-  },
-  {
-    id: '14',
     title: 'Vegetarian Bag',
     restaurantName: 'Resto U’ Esplanade',
-    description: 'Extra veggie-based meal portions.',
+    description: 'Extra veggie-based meal portions from today.',
     price: 2.50,
     pickupDate: TODAY,
     pickupTimeStart: '13:45',
@@ -277,10 +261,10 @@ const INITIAL_OFFERS: Offer[] = [
     isMysteryBag: false
   },
   {
-    id: '15',
+    id: '14',
     title: 'Halal Bag',
     restaurantName: 'Resto U’ Paul Appell',
-    description: 'Certified Halal options from today.',
+    description: 'Certified Halal options from our kitchen.',
     price: 3.00,
     pickupDate: TODAY,
     pickupTimeStart: '13:00',
@@ -293,10 +277,10 @@ const INITIAL_OFFERS: Offer[] = [
     isMysteryBag: false
   },
   {
-    id: '16',
+    id: '15',
     title: 'Vegan Bag',
     restaurantName: 'Cafétéria La Misha',
-    description: 'Complete plant-based surplus meals.',
+    description: 'Complete plant-based delicious surplus meals.',
     price: 2.50,
     pickupDate: TODAY,
     pickupTimeStart: '14:15',
@@ -309,10 +293,10 @@ const INITIAL_OFFERS: Offer[] = [
     isMysteryBag: false
   },
   {
-    id: '17',
+    id: '16',
     title: 'Desserts and Bakery Bag',
     restaurantName: 'Resto U’ Cronenbourg',
-    description: 'Treats from the cafeteria bakery section.',
+    description: 'Fresh treats from the cafeteria bakery section.',
     price: 1.50,
     pickupDate: TODAY,
     pickupTimeStart: '16:00',
@@ -322,6 +306,22 @@ const INITIAL_OFFERS: Offer[] = [
     rating: 4.7,
     remaining: 8,
     tags: [DietType.DESSERTS_BAKERY],
+    isMysteryBag: false
+  },
+  {
+    id: '17',
+    title: 'Meals Bag',
+    restaurantName: 'Cafétéria de la Fonderie',
+    description: 'A mix of today\'s tray meal surplus.',
+    price: 3.00,
+    pickupDate: TODAY,
+    pickupTimeStart: '13:30',
+    pickupTimeEnd: '14:30',
+    imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80',
+    distance: 3.9,
+    rating: 4.3,
+    remaining: 4,
+    tags: [DietType.MEALS],
     isMysteryBag: false
   }
 ];

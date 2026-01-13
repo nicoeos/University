@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, cartCount, onCartClick, 
            <div className="bg-white p-1 rounded-full">
              <ShoppingBag className="text-[#D62828] w-6 h-6" />
            </div>
-           <h1 className="text-xl font-bold tracking-tight">The Good Canteen</h1>
+           <h1 className="text-xl font-bold tracking-tight">The Good Cantine</h1>
         </div>
 
         <div className="flex items-center space-x-6">
